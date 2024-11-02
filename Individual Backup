@@ -1,0 +1,1013 @@
+//
+
+// To compile, at Ubuntu terminal, type : 
+
+// 		g++ StuAssnP1Main.c MyMenu.c -o AssnPart1.run
+
+//
+
+// To run, at Ubuntu terminal, type : 
+
+// 		./AssnPart1.run
+
+//
+
+
+
+#include <math.h>
+
+#include <stdio.h>
+
+#include <stdbool.h>
+
+#include <math.h>
+
+#include "MyMenu.h"
+
+
+
+// -------------------------------------------------------------------------------------
+
+// Below preprocessor macros, using #define to specify CONSTANTS
+
+// -------------------------------------------------------------------------------------
+
+// (Recommended but not compulsory. Delete them if you do not wish to use ...)
+
+// -------------------------------------------------------------------------------------
+
+#define DEFAULT_PRECISION 8
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------------------
+
+// Global Variables 
+
+// -------------------------------------------------------------------------------------
+
+// (Recommended but not compulsory. Delete them if you do not wish to use ...)
+
+// -------------------------------------------------------------------------------------
+
+bool markRectCenter         = false;
+
+bool markRectCorner         = false;
+
+char charForRectCenter      = 'X';
+
+char charForRectCorner      = 'c';
+
+char charForRectPerimeter   = '#';
+
+
+
+int field1_width = 15;
+
+int field2_width = 15;
+
+int field3_width = 30;
+
+int field4_width = 15;
+
+
+
+
+
+
+
+
+
+
+
+int defaultPrecision = DEFAULT_PRECISION;
+
+
+
+
+
+// -------------------------------------------------------------------------------------
+
+// Function Prototypes (sample)
+
+// -------------------------------------------------------------------------------------
+
+void printWelcomeMsg ();
+
+
+
+int getValidInteger() {
+
+    int value;
+
+    char term; 
+
+	int result;
+
+    while (1) {
+
+		
+
+		
+
+        // Read input and check if it's a valid integer
+
+        if (scanf(" %d%c", &value, &term) != 2 || term != '\n') {
+
+            printf("\nInvalid input. Please enter a valid integer : ");
+
+            while (getchar() != '\n');  //clear input buffer
+
+        } else {
+
+            return value;
+
+        }
+
+    }
+
+}
+
+
+
+float getValidFloat() {
+
+    float value;
+
+    char term;
+
+
+
+    while (1) {
+
+        // same just float
+
+        if (scanf(" %f%c", &value, &term) != 2 || term != '\n') {
+
+            printf("\nInvalid input. Please enter a valid floating-point number: ");
+
+            while (getchar() != '\n'); 
+
+        } else {
+
+            return value;  
+
+        }
+
+    }
+
+}
+
+void configurePrintOptions() {
+
+    int choice;
+
+	int i = 0;
+
+    while (i == 0) {
+
+        // Display the menu
+
+        printf("====================================================\n");
+
+        printf("------ Configure Print Number Options Sub Menu ------\n");
+
+        printf("====================================================\n");
+
+        printf("0) Back to Main Menu\n");
+
+        printf("1) Adjust width of field 1  (current : %d spacing allocated)\n", field1_width);
+
+        printf("2) Adjust width of field 2  (current : %d spacing allocated)\n", field2_width);
+
+        printf("3) Adjust width of field 3  (current : %d spacing allocated)\n", field3_width);
+
+        printf("4) Adjust width of field 4  (current : %d spacing allocated)\n", field4_width);
+
+        printf("5) Adjust floating point number precision (current : %d decimal places)\n", defaultPrecision);
+
+        printf("----------------------------------------------------\n");
+
+        printf("\nPlease enter your choice (0 - 5) : ");
+
+		choice = getValidInteger();
+
+		
+
+            int newValue;
+
+
+
+            switch (choice) {
+
+            	case 0:
+
+                	printf("\nBack to Main Menu...\n");
+
+               		i = 1;
+
+                	break;
+
+                case 1:
+
+                    printf("\nEnter new width for field 1: ");
+
+                    newValue = getValidInteger();
+
+                    field1_width = newValue;
+
+                    printf("\nNew Value for width for field 1 : %d\n",newValue);
+
+                    break;
+
+                case 2:
+
+                    printf("\nEnter new width for field 2: ");
+
+                    newValue = getValidInteger();
+
+                    field2_width = newValue;
+
+                    printf("\nNew Value for width for field 2 : %d\n",newValue);
+
+                    break;
+
+                case 3:
+
+                    printf("\nEnter new width for field 3: ");
+
+                    newValue = getValidInteger();
+
+                    field3_width = newValue;
+
+                    printf("\nNew Value for width for field 3 : %d\n",newValue);
+
+                    break;
+
+                case 4:
+
+                    printf("\nEnter new width for field 4: ");
+
+                    newValue = getValidInteger();
+
+                    field4_width = newValue;
+
+                    printf("\nNew Value for width for field 4 : %d\n",newValue);
+
+                    break;
+
+                case 5:
+
+                    printf("\nEnter new precision for floating point numbers: ");
+
+                    newValue = getValidInteger();
+
+                    defaultPrecision = newValue;
+
+                    printf("\nNew Value for precision for floating point numbers : %d\n",newValue);
+
+                    break;
+
+                default:
+
+                    printf("\nInvalid choice! Please enter a number between 0 and 5.\n");
+
+            }
+
+        
+
+
+
+        // Print an empty line for readability between choices
+
+        printf("\n");
+
+    }
+
+}
+
+
+
+void drawRectOptions()
+
+{
+
+ int i = 1;
+
+    while (i) {
+
+        // Display the menu
+
+        int choice;
+
+        printf("====================================================\n");
+
+        printf("------ Configure Draw Rectangle Options Sub Menu ------\n");
+
+        printf("====================================================\n");
+
+        printf("0) Back to Main Menu\n");
+
+        printf("1) Toggle marking of rectangle center  (currently : %s)\n", markRectCenter ? "on" : "off");
+
+        printf("2) Toggle marking of rectangle corner  (currently : %s)\n", markRectCorner ? "on" : "off");
+
+        printf("3) Change char for rectangle center    (current : '%c')\n", charForRectCenter);
+
+        printf("4) Change char for rectangle corner    (current : '%c')\n", charForRectCorner);
+
+        printf("5) Change char for rectangle perimeter (current : '%c')\n", charForRectPerimeter);
+
+        printf("----------------------------------------------------\n");
+
+        printf("\nPlease enter your choice (0 - 5) : ");
+
+        choice = getValidInteger();
+
+        
+
+
+
+        // Handle menu choices
+
+        switch (choice) {
+
+            case 0:
+
+                printf("\nBack to Main Menu...\n");
+
+                i = 0;
+
+                break;
+
+            case 1:
+
+                markRectCenter = !markRectCenter;
+
+                printf("\nDone! marking of rectangle center switch to : '%s'\n\n", markRectCenter ? "on" : "off");
+
+                break;
+
+            case 2:
+
+                markRectCorner = !markRectCorner;
+
+                printf("\nDone! marking of rectangle corner switch to : '%s'\n\n", markRectCorner ? "on" : "off");
+
+                break;
+
+            case 3:
+
+                printf("\nEnter new character for rectangle center: ");
+
+                scanf(" %c", &charForRectCenter);
+
+                
+
+                while (getchar() != '\n'); 
+
+                printf("\nchar for rectangle center set to :'%c'\n\n", charForRectCenter);  
+
+                break;
+
+            case 4:
+
+                printf("\nEnter new character for rectangle corner: ");
+
+                scanf(" %c", &charForRectCorner);  
+
+                while (getchar() != '\n'); 
+
+                printf("\nchar for rectangle corner set to :'%c'\n\n", charForRectCorner); 
+
+                break;
+
+            case 5:
+
+                printf("\nEnter new character for rectangle perimeter: ");
+
+                scanf(" %c", &charForRectPerimeter);  
+
+                while (getchar() != '\n');
+
+                printf("\nchar for rectangle perimeter set to :'%c'\n\n", charForRectPerimeter);  
+
+                break;
+
+            default:
+
+                printf("\nInvalid choice! Please enter a number between 0 and 5.\n\n");
+
+                break;
+
+        }
+
+    }
+
+}
+
+
+
+void PrintRect() {
+
+    int length, breadth;// swap side lol
+
+
+
+    
+
+
+
+    do {
+
+        printf("Please enter the length of a rectangle (>= 3 units): ");
+
+        breadth = getValidInteger();  
+
+
+
+        if (breadth < 3) {  // Check if the length is less than 3
+
+            printf("Invalid input. Please enter an integer value greater than or equal to 3.\n");
+
+        }
+
+    } while (breadth < 3);  // Keep asking for input if the length is invalid
+
+
+
+    // Get the dimensions from the user (breadth)
+
+    do {
+
+        printf("Please enter the breadth of a rectangle (>= 3 units): ");
+
+        length = getValidInteger();  
+
+
+
+        if (length < 3) {  // Check if the breadth is less than 3
+
+            printf("Invalid input. Please enter an integer value greater than or equal to 3.\n");
+
+        }
+
+    } while (length < 3);  // Keep asking for input if the breadth is invalid
+
+
+
+    // Dynamically allocate memory for the rectangle
+
+    char **Rect = malloc(length * sizeof(char *));  // Allocate rows
+
+    for (int i = 0; i < length; i++) {
+
+        Rect[i] = malloc(breadth * sizeof(char));   // Allocate columns for each row
+
+    }
+
+
+
+    // Initialize Map
+
+    for (int i = 0; i < length; i++) {
+
+        for (int j = 0; j < breadth; j++) {
+
+            // Fill borders with charForRectPerimeter
+
+            if (i == 0 || i == length - 1 || j == 0 || j == breadth - 1) {
+
+                Rect[i][j] = charForRectPerimeter;
+
+            }
+
+            // Fill the interior with spaces
+
+            else {
+
+                Rect[i][j] = ' ';
+
+            }
+
+        }
+
+    }
+
+
+
+    // Mark the four corners if markRectCorner is true
+
+    if (markRectCorner) {
+
+        Rect[1][1] = charForRectCorner;  // Top-left corner
+
+        Rect[1][breadth - 2] = charForRectCorner;  // Top-right corner
+
+        Rect[length - 2][1] = charForRectCorner;  // Bottom-left corner
+
+        Rect[length - 2][breadth - 2] = charForRectCorner;  // Bottom-right corner
+
+    }
+
+
+
+    // Mark the center if markRectCenter is true
+
+    if (markRectCenter) {
+
+        int centerRow = length / 2;
+
+        int centerCol = breadth / 2;
+
+
+
+        // Mark the center based on whether dimensions are even or odd
+
+        if (length % 2 == 0 && breadth % 2 == 0) {
+
+            // Both length and breadth are even, mark the center as a block of 4 cells
+
+            Rect[centerRow][centerCol] = charForRectCenter;
+
+            Rect[centerRow - 1][centerCol] = charForRectCenter;
+
+            Rect[centerRow][centerCol - 1] = charForRectCenter;
+
+            Rect[centerRow - 1][centerCol - 1] = charForRectCenter;
+
+        } else if (length % 2 == 0) {
+
+            // Length is even, mark a vertical center
+
+            Rect[centerRow][centerCol] = charForRectCenter;
+
+            Rect[centerRow - 1][centerCol] = charForRectCenter;
+
+        } else if (breadth % 2 == 0) {
+
+            // Breadth is even, mark a horizontal center
+
+            Rect[centerRow][centerCol] = charForRectCenter;
+
+            Rect[centerRow][centerCol - 1] = charForRectCenter;
+
+        } else {
+
+            // Both dimensions are odd, mark a single center
+
+            Rect[centerRow][centerCol] = charForRectCenter;
+
+        }
+
+    }
+
+
+
+    // Print the rectangle
+
+    for (int i = 0; i < length; i++) {
+
+        for (int j = 0; j < breadth; j++) {
+
+            printf("%c", Rect[i][j]);
+
+        }
+
+        printf("\n");
+
+    }
+
+
+
+    // Free the allocated memory
+
+    for (int i = 0; i < length; i++) {
+
+        free(Rect[i]);
+
+    }
+
+    free(Rect);
+
+    // Calculate the perimeter and area
+
+    int perimeter = 2 * (length + breadth);
+
+    int area = length * breadth;
+
+
+
+    // Print the results
+
+    printf("\nPerimeter of rectangle : %d units\n", perimeter);
+
+    printf("Area of rectangle      : %d units square\n", area);
+
+
+
+}
+
+void printFormattedNumber(){
+
+
+
+float chosenNumber;
+
+
+
+printf("\n");
+
+printf("Please enter your number : ");
+
+chosenNumber = getValidFloat();
+
+printf("\n\n");
+
+printf("----------------------------------------------------- \n");
+
+printf("Information on your number : %f...\n", chosenNumber);
+
+printf("----------------------------------------------------- \n");
+
+char is[] = "is : "; // for first four line
+
+//< 1st field with 15 char> (space) <2nd field with 15char> ('(space' or space space) <3rd field with 30char> (space) <4th field with 15 char>
+
+// first line
+
+char absLength[] = "abs ( ";
+
+printf("%*s ", field1_width, absLength); 
+
+printf("%-*.*f) ", field2_width , defaultPrecision, chosenNumber);
+
+printf("%*s ", field3_width, is);
+
+printf("%-*.*f\n", field4_width, defaultPrecision, fabs(chosenNumber)); //absolute value
+
+
+
+//second line
+
+char ceilLength[] = "ceil ( ";
+
+printf("%*s ", field1_width, ceilLength); 
+
+printf("%-*.*f) ", field2_width , defaultPrecision, chosenNumber);
+
+printf("%*s ", field3_width, is);
+
+printf("%-*.*f\n", field4_width, defaultPrecision, ceil(chosenNumber)); //ceiling value
+
+
+
+//third line
+
+char floorLength[] = "floor ( ";
+
+printf("%*s ", field1_width, floorLength); 
+
+printf("%-*.*f) ", field2_width , defaultPrecision, chosenNumber);
+
+printf("%*s ", field3_width, is);
+
+printf("%-*.*f\n", field4_width, defaultPrecision, floor(chosenNumber)); //floor value
+
+
+
+//fourth line
+
+char roundLength[] = "round ( ";
+
+printf("%*s ", field1_width, roundLength); 
+
+printf("%-*.*f) ", field2_width, defaultPrecision, chosenNumber);
+
+printf("%*s ", field3_width, is);
+
+printf("%-*.*f\n", field4_width, defaultPrecision, round(chosenNumber)); //round value
+
+
+
+//fifth line to 8 line
+
+char justSpace[] = " ";
+
+int i = 1;
+
+for (i = 1; i<=4; i++){//print first 2 lines first then the rest which are diff
+
+//first 2 lines
+
+printf("%*s ", field1_width, justSpace); 
+
+printf("%-*.*f  ", field2_width, defaultPrecision, chosenNumber);
+
+//print in scientific notation
+
+if (i == 1){
+
+	char inScientificNotation[] = "in scientific notation : ";
+
+	printf("%*s ", field3_width, inScientificNotation);
+
+	printf("%-*.*e\n", field4_width, defaultPrecision, chosenNumber); //scientific notation
+
+}
+
+//print in first d.p.
+
+else if (i ==2){
+
+	char to1Dp[] = "to 1 dec place : ";
+
+	printf("%*s ", field3_width, to1Dp);
+
+	printf("%-*.1f\n", field4_width, chosenNumber); //1st d.p. value
+
+}
+
+//print in 2nd d.p,
+
+else if (i ==3){
+
+	char to2Dp[] = "to 2 dec place : ";
+
+	printf("%*s ", field3_width, to2Dp);
+
+	printf("%-*.2f\n", field4_width, chosenNumber); //2nd d.p. value
+
+}
+
+//print in 3rd d.p.
+
+else if (i ==4){
+
+	char to3Dp[] = "to 3 dec place : ";
+
+	printf("%*s ", field3_width, to3Dp);
+
+	printf("%-*.3f\n", field4_width, chosenNumber); //3rd d.p. value
+
+}
+
+} // end of 5th to 8th line
+
+// start of 9 to 14 line
+
+char castingLength[] = "casting ";
+
+
+
+int ii = 0;
+
+for(ii == 0; ii<=5; ii++){
+
+//first 2 lines
+
+printf("%*s ", field1_width, castingLength); 
+
+printf("%-*.*f  ", field2_width, defaultPrecision, chosenNumber);
+
+switch (ii)
+
+	{
+
+//print integer
+
+	case 0:{
+
+		printf("%*s ", field3_width, "to int : ");
+
+		printf("%-*d\n", field4_width, (int)chosenNumber); //change to int
+
+		}
+
+		break;
+
+//print long 
+
+	case 1: {
+
+		printf("%*s ", field3_width, "to long : ");
+
+		printf("%-*ld\n", field4_width, (long)chosenNumber); //change to long 
+
+		}
+
+		break;
+
+//print long int
+
+	case 2: {
+
+		printf("%*s ", field3_width, "to long int : ");
+
+		printf("%-*ld\n", field4_width, (long int)chosenNumber); //change to long int
+
+		}
+
+		break;
+
+//print float
+
+	case 3: {
+
+		printf("%*s ", field3_width, "to float : ");
+
+		printf("%-*f\n", field4_width, (float)chosenNumber); //change to float
+
+		}
+
+		break;
+
+//print double
+
+	case 4:{
+
+		printf("%*s ", field3_width, "to double : ");
+
+		printf("%-*f\n", field4_width, (double)chosenNumber); //change to double
+
+		}
+
+		break;
+
+//print long double
+
+	case 5:{
+
+		printf("%*s ", field3_width, "to long float : ");
+
+		printf("%-*Lf\n", field4_width, (long double)chosenNumber); //change to long double
+
+		}
+
+		break;
+
+	}//end of switch
+
+}
+
+}
+
+// -------------------------------------------------------------------------------------
+
+
+
+int main() 
+
+{
+
+    printWelcomeMsg ();	
+
+
+
+    int choice;
+
+    
+
+    do
+
+    {
+
+    	// Below function is declared in "MyMenu.h", implemented in "MyMenu.c"
+
+        printMainMenuOptions ();
+
+        
+
+        // Note : below 2 lines represent the MOST BASIC form of getting input from user!
+
+        //        please do intensive research, and write a more complete set of function(s),
+
+        //        that handle error situations like : 
+
+        //        user types in invalid input (e.g. "hello", "abc123", "-123", "2.33", etc)
+
+        //        when a whole number, between 1 to 5, is expected.        
+
+        printf("Please enter your choice (1 - 5) : ");
+
+        choice = getValidInteger();
+
+
+
+        printf("\n");
+
+    
+
+        switch (choice)
+
+        {
+
+            case 1 : 
+
+            		 drawRectOptions();
+
+                     break;        
+
+        
+
+            case 2 : configurePrintOptions();
+
+                     break; 
+
+
+
+            case 3 : PrintRect();
+
+                     break; 
+
+
+
+            case 4 : printFormattedNumber();
+
+                     break;
+
+                     
+
+           	case 5 : 
+
+           	printf("\n");
+
+   		    printf("Thank you for using this program, have a nice day! \n");
+
+            printf("\n");
+
+            return 0;
+
+
+
+           	
+
+            default :
+
+            printf("\nInvalid choice! Please enter a number between 0 and 5.\n");
+
+            break;
+
+        }   // end switch ...
+
+
+
+        printf("\n");
+
+        
+
+    }   while (1);
+
+    
+
+
+
+
+
+    
+
+}   // end main () ...
+
+
+
+
+
+// -------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------
+
+
+
+void printWelcomeMsg ()
+
+{
+
+    printf("\n");
+
+    printf("------------------------------------------------------ \n");
+
+    printf("- Welcome to My Assn P1 Program! - \n");
+
+    printf("------------------------------------------------------ \n");
+
+    printf("- Student Number : <2400813> \n");
+
+    printf("- Student Name   : <Geremy Lee Yi Liang> \n");
+
+    printf("------------------------------------------------------ \n");
+
+    printf("\n");
+
+    
+
+}   // end printWelcomeMsg () ...
+
+
+
+// -------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------
